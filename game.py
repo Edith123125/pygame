@@ -32,7 +32,7 @@ def run_game():
 
     # Create a scoreboard
     count = 0
-    count_update = "Enemies Killed: %d" % count
+    count_update = "Enemies Killed: %d | Active Enemies: %d" % (count, 0)
     scoreboard = Scoreboard(screen, count_update)
 
     enemies = Group()
@@ -67,8 +67,8 @@ def run_game():
                         bullets.remove(bullet)
                     if enemy.rect.colliderect(bullet.rect):
                         count += 1
-                        count_update = "Enemies Killed: %d" % count
-                        scoreboard = Scoreboard(screen, count_update)
+                        count_update = "Enemies Killed: %d | Active Enemies: %d" % (count, len(enemies))
+                        scoreboard.scoreboard_message(count_update)  # Update the scoreboard text
 
                         enemies.remove(enemy)
                         bullets.remove(bullet)
@@ -81,10 +81,11 @@ def run_game():
                     pygame.mixer.music.play(0)
                     game_settings.game_active = False  # End the game
 
-        # Display active enemies and score
-        count_update = "Enemies Killed: %d" % count
-        scoreboard = Scoreboard(screen, count_update)
+        # Update the scoreboard with the current number of active enemies
+        count_update = "Enemies Killed: %d | Active Enemies: %d" % (count, len(enemies))
+        scoreboard.scoreboard_message(count_update)
 
+        # Draw everything on the screen
         gf.update_screen(game_settings, screen, hero, bullets, enemies, play_button, quit_button, restart_button, scoreboard)
 
 run_game()
