@@ -5,16 +5,18 @@ class Scoreboard(object):
         self.screen = screen
         self.screen_rect = screen.get_rect()
 
-        self.width = 300
-        self.height = 50
-        self.scoreboard_color = (230, 153, 255)  # Background color
-        self.text_color = (255, 255, 255)  # Text color
+        # Scoreboard dimensions and properties
+        self.width, self.height = 300, 50
+        self.scoreboard_color = (0, 0, 0)  # Black background
+        self.text_color = (255, 255, 255)  # White text
         self.font = pygame.font.Font(None, 40)  # Font and size
 
+        # Build the scoreboard's rect object and position it at the top
         self.rect = pygame.Rect(0, 0, self.width, self.height)
         self.rect.centerx = self.screen_rect.centerx
         self.rect.top = self.screen_rect.top + 10  # Position at the top of the screen
 
+        # The scoreboard message needs to be prepped only once
         self.scoreboard_message(scoreboard_text)
 
     def scoreboard_message(self, scoreboard_text):
