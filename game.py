@@ -1,70 +1,90 @@
-
-import pygame #duh
-from hero import Hero #bring in the hero class with all its methods and glory
+import pygame
+import time
+from hero import Hero
 from enemy import Enemy
 from settings import Settings
 import game_functions as gf
 from pygame.sprite import Group
 from start_button import Play_button
+from quit_button import Quit_button
+from restart_button import Restart_button  # Import the new Restart_button class
 from scoreboard import Scoreboard
 
-#set up the main core function
 def run_game():
-	pygame.init() # initialize all the pygame modules
-	game_settings = Settings() #create an instance of settings class
-	screen = pygame.display.set_mode(game_settings.screen_size) #set the screen size with set_mode
-	pygame.display.set_caption("Monster Attack") #set the message on the status bar
-	hero = Hero(screen) # set a variable equal to the class and pass it the screen
-	
-	#music
-	pygame.mixer.music.load('sounds/music.wav')
-	pygame.mixer.music.play(-1)
+    pygame.init()
+    game_settings = Settings()
+    screen = pygame.display.set_mode(game_settings.screen_size)
+    pygame.display.set_caption("Monster Attack")
+    hero = Hero(screen)
 
-	# create a play button object and assign to a bar
-	play_button = Play_button(screen, 'Press to begin')
+    # Music
+    pygame.mixer.music.load('sounds/music.wav')
+    pygame.mixer.music.play(-1)
 
-	# create a scoreboard object
-	count = 0
-	count_update = "Enemies Killed: %d" %count
-	scoreboard = Scoreboard(screen, count_update)
+    # Create a play button
+    play_button = Play_button(screen, 'Press to begin')
 
-	enemies = Group()
-	bullets = Group() #set bullets
-	enemies.add(Enemy(screen, game_settings))
+    # Create a quit button
+    quit_button = Quit_button(screen, 'Quit')
 
-	tick = 0
-	
+    # Create a restart button
+    restart_button = Restart_button(screen, 'Restart')
 
-	while 1: #run this loop forever
-		gf.check_events(hero, bullets, game_settings, screen, play_button) #call gf (aliased from game_functions module) and get the check_events
-		gf.update_screen(game_settings, screen, hero, bullets, enemies, play_button, scoreboard) # call the update_screen method
-		if game_settings.game_active:
-			hero.update() #update the hero flags
-			enemies.update(hero, game_settings.enemy_speed)
-			tick += 1
-			if tick % 50 == 0:
-				enemies.add(Enemy(screen, game_settings))
-			bullets.update() #call the update method in the while loop
-			
-			for enemy in enemies:
-				for bullet in bullets: # get rid of bullets that are off the screen
-					if bullet.rect.bottom <= 0: #bullet bottom is at the top of the screen
-						bullets.remove(bullet) #call remove()
-					if len(bullets) >= 10:
-						bullets.remove(bullet)
-					if enemy.rect.colliderect(bullet.rect):
-						count += 1
-						count_update = "Enemies Killed: %d" %count
-						scoreboard = Scoreboard(screen, count_update)
-						
-						enemies.remove(enemy)
-						bullets.remove(bullet)
-						pygame.mixer.music.load('sounds/win.wav')
-						pygame.mixer.music.play(0)
-				if enemy.rect.colliderect(hero.rect):
-					print "The monster got you! You died!"
-					pygame.mixer.music.load('sounds/lose.wav')
-					pygame.mixer.music.play(0)
-					# exit(0)		
-							
-run_game() #start the game	
+    # Create a scoreboard
+    count = 0
+    count_update = "Enemies Killed: %d" % count
+    scoreboard = Scoreboard(screen, count_update)
+
+    enemies = Group()
+    bullets = Group()
+
+    tick = 0
+    enemy_spawn_delay = 400  # Increased delay before first enemy spawns
+
+    clock = pygame.time.Clock()  # Add a clock to control frame rate
+
+    while True:
+        clock.tick(60)  # Limit the frame rate to 60 FPS
+
+        gf.check_events(hero, bullets, game_settings, screen, play_button, quit_button, restart_button, enemies)
+
+        if game_settings.game_active:
+            hero.update()
+            enemies.update(hero, game_settings.enemy_speed)
+            tick += 1
+
+            # Delay enemy spawn and slow down frequency
+            if tick > enemy_spawn_delay and tick % 200 == 0:  # Spawn enemies less frequently
+                enemies.add(Enemy(screen, game_settings))
+
+            bullets.update()
+
+            for enemy in enemies:
+                for bullet in bullets:
+                    if bullet.rect.bottom <= 0:
+                        bullets.remove(bullet)
+                    if len(bullets) >= 20:  # Increased bullet limit
+                        bullets.remove(bullet)
+                    if enemy.rect.colliderect(bullet.rect):
+                        count += 1
+                        count_update = "Enemies Killed: %d" % count
+                        scoreboard = Scoreboard(screen, count_update)
+
+                        enemies.remove(enemy)
+                        bullets.remove(bullet)
+                        pygame.mixer.music.load('sounds/win.wav')
+                        pygame.mixer.music.play(0)
+
+                if enemy.rect.colliderect(hero.rect):
+                    print("The monster got you! You died!")
+                    pygame.mixer.music.load('sounds/lose.wav')
+                    pygame.mixer.music.play(0)
+                    game_settings.game_active = False  # End the game
+
+        # Display active enemies and score
+        count_update = "Enemies Killed: %d" % count
+        scoreboard = Scoreboard(screen, count_update)
+
+        gf.update_screen(game_settings, screen, hero, bullets, enemies, play_button, quit_button, restart_button, scoreboard)
+
+run_game()
