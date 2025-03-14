@@ -6,7 +6,7 @@ class Bullet(Sprite):
         super(Bullet, self).__init__()
         self.screen = screen
 
-        # make a bullet
+        # makes a bullet
         self.rect = pygame.Rect(0,0, game_settings.bullet_width, game_settings.bullet_height)
         self.rect.centerx = hero.rect.centerx
         self.rect.top = hero.rect.top
@@ -15,8 +15,8 @@ class Bullet(Sprite):
         self.y = self.rect.y
 
     def update(self):
-        self.y -= self.speed #change the y, each time update is run, by bullet speed
-        self.rect.y = self.y #update rect position	
+        self.y -= self.speed
+        self.rect.y = self.y
 
     def draw_bullet(self):
-        pygame.draw.rect(self.screen, self.color, self.rect) #draw the bullet!
+        pygame.draw.rect(self.screen, self.color, self.rect) #draws the bullet.

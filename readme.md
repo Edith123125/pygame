@@ -1,103 +1,44 @@
-#What is it?
---- 
-A simple, monster killing game built in Python through the Pygame modules. Users can start the game, which comes equipped with music and sound effects, shoot bullets to kill monsters which head towards them and keep track of how many monsters they've killed.
+# Monster Battle Game
+This is a Monster Battle Game built using Python and the Pygame library. The player controls a hero who must defend themselves against waves of monsters. The goal is to kill as many monsters as possible before they reach the hero. The game features a scoreboard, sound effects, and a high-score system.
 
-##Languages Used
----
-  * Python
+## Features
+- Hero Movement- Move the hero using the arrow keys (left, right, up, down).
+- Monster Spawning- Monsters spawn at the top of the screen and move toward the hero.
+- Bullets- Shoot bullets using the space bar to kill monsters.
+- Scoreboard-Displays the number of enemies killed, active enemies, and the high score.
+- High Score System-The high score is saved to a SQLite database and displayed when the game starts.
+- Restart and Quit Options- Restart the game or quit after the game ends.
 
-##Link to Github
----
-[Github](https://github.com/paigen11/pygame)
+## How to Play
+1. Start the Game- Click the "Press to begin" button to start the game.
+2. Move the Hero- Use the arrow keys to move the hero.
+3. Shoot Bullets- Press the space bar to shoot bullets and kill monsters.
+4. Avoid Monsters- If a monster reaches the hero, the game ends.
+5. Restart or Quit- After the game ends, click "Restart" to play again or "Quit" to exit the game.
 
-##Author
----
-Paige Niedringhaus
+## Languages Used
+-Python 3
+-Pygame library
+-SQLite (included with Python)
 
-##Screenshots
----
-Start screen when users load up the game
-![alt text](https://github.com/paigen11/pygame/blob/master/screenshots/start-screen.png 'start-screen.png')
+### File Structure.
+pygame/
+├── images/                  # Folder for game images (e.g., hero, monsters)
+├── sounds/                  # Folder for game sounds (e.g., music, win/lose sounds)
+├── game.py                  # Main game script
+├── hero.py                  # Hero class
+├── enemy.py                 # Enemy class
+├── bullets.py               # Bullet class
+├── settings.py              # Game settings
+├── game_functions.py        # Game functions (e.g., event handling, screen updates)
+├── start_button.py          # Start button class
+├── quit_button.py           # Quit button class
+├── restart_button.py        # Restart button class
+├── scoreboard.py            # Scoreboard class
+├── README.md                # Project documentation
+└── requirements.txt         # List of dependencies
 
-Game play screen of enemies coming for the player
-![alt text](https://github.com/paigen11/pygame/blob/master/screenshots/game-play.png 'game-play.png')
+### Author:Edith Gatwiri Kobia
+Feel free to reach out if you have any feedback or would like to connect . github:https://github.com/
 
-Bullets used to kill enemies and rack up points on the score counter
-![alt text](https://github.com/paigen11/pygame/blob/master/screenshots/bullet-time.png 'bullet-time.png')
-
-##Further Info
----
-Through the use of the Pygame modules and some fairly simple Python-based code this whole game was created.
-
-##Requirements
----
-You'll need to install Python on your system if you don't already have it - my system's running on Python 2 not 3, which can be downloaded [here](https://www.python.org/downloads/).
-
-After that, in order to install Pygame, you'll need to make sure your pip and setuptools are up to date, which can be done through the instructions [here](https://packaging.python.org/installing/).
-
-Finally, you can install the Pygame modules using these instruction [here](http://www.pygame.org/wiki/CompileUbuntu)
-
-##Code Examples
----
-Python code that keeps the game running and updating as it runs
-```python
-	while 1: #run this loop forever
-			gf.check_events(hero, bullets, game_settings, screen, play_button) #call gf (aliased from game_functions module) and get the check_events
-			gf.update_screen(game_settings, screen, hero, bullets, enemies, play_button, scoreboard) # call the update_screen method
-			if game_settings.game_active:
-				hero.update() #update the hero flags
-				enemies.update(hero, game_settings.enemy_speed)
-				tick += 1
-				if tick % 50 == 0:
-					enemies.add(Enemy(screen, game_settings))
-				bullets.update() #call the update method in the while loop
-				
-				for enemy in enemies:
-					for bullet in bullets: # get rid of bullets that are off the screen
-						if bullet.rect.bottom <= 0: #bullet bottom is at the top of the screen
-							bullets.remove(bullet) #call remove()
-						if len(bullets) >= 10:
-							bullets.remove(bullet)
-						if enemy.rect.colliderect(bullet.rect):
-							count += 1
-							count_update = "Enemies Killed: %d" %count
-							scoreboard = Scoreboard(screen, count_update)
-							
-							enemies.remove(enemy)
-							bullets.remove(bullet)
-							pygame.mixer.music.load('sounds/win.wav')
-							pygame.mixer.music.play(0)
-					if enemy.rect.colliderect(hero.rect):
-						print "The monster got you! You died!"
-						pygame.mixer.music.load('sounds/lose.wav')
-						pygame.mixer.music.play(0)
-```
-
-Code for enemy that spawns randomly at the top of the screen and moves towards the hero
-```python
-	class Enemy(Sprite):
-	def __init__(self, screen, game_settings):
-		super(Enemy, self).__init__()
-		self.screen = screen
-
-		self.enemy_image = pygame.image.load('images/monster1.png')
-		self.rect = self.enemy_image.get_rect()
-		self.screen_rect = screen.get_rect()
-
-		self.rect.centerx = randint(self.screen_rect.left, self.screen_rect.right)
-		self.rect.top = self.screen_rect.top
-
-	def update(self, hero, speed = 3):
-		dx, dy = self.rect.x - hero.rect.x, self.rect.y - hero.rect.y
-		dist = math.hypot(dx, dy)
-		dx, dy = dx / dist, dy / dist
-
-		self.rect.x -= dx * speed
-		self.rect.y -= dy * speed
-
-	def draw_enemy(self):
-		self.screen.blit(source = self.enemy_image, dest = self.rect)
-
-	def __exit__(self, *err):
-		self.remove(self)
-```		
+Enjoy the battle! ⚔️🔥

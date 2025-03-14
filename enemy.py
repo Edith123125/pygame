@@ -12,17 +12,17 @@ class Enemy(Sprite):
         self.rect = self.enemy_image.get_rect()
         self.screen_rect = screen.get_rect()
 
-        # Spawn enemies slightly off-screen and not directly on the hero
+        # Spawn enemies not directly on the heo and slightly off-screen 
         self.rect.centerx = randint(self.screen_rect.left + 100, self.screen_rect.right - 100)
-        self.rect.top = self.screen_rect.top - 50  # Spawn slightly above the screen
+        self.rect.top = self.screen_rect.top - 50  # Spawns slightly above screen
 
     def update(self, hero, speed=3):
         dx, dy = self.rect.x - hero.rect.x, self.rect.y - hero.rect.y
         dist = math.hypot(dx, dy)
         
-        # Avoid division by zero
+        # this avoids the  division by zero
         if dist == 0:
-            dist = 1  # Set a small distance to avoid division by zero
+            dist = 1  # this sets  a small distance to avoid division by zero
 
         dx, dy = dx / dist, dy / dist
 

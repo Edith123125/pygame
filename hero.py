@@ -1,34 +1,33 @@
-import pygame # duh
-
+import pygame 
 
 class Hero(object):
 	def __init__(self, screen):
 		super(Hero, self).__init__()
-		self.screen = screen #give the hero the ability to control the screen
+		self.screen = screen # this gives the hero the ability to control the screen
 
-		# Load the hero image, get it's rect
+		# loading the image
 		self.image = pygame.image.load('images/hero.png')
-		self.rect = self.image.get_rect() #pygame gives us get_rect on any object so we can get some dimensions and location
-		self.screen_rect = screen.get_rect() #assign a var so the hero class knows how 
+		self.rect = self.image.get_rect()
+		self.screen_rect = screen.get_rect() 
 
-		self.rect.centerx = self.screen_rect.centerx #this will put the middle of the hero in the middle of our screen
-		self.rect.bottom = self.screen_rect.bottom #this will put our hero "bottom" at the bottom of the screen
+		self.rect.centerx = self.screen_rect.centerx 
+		self.rect.bottom = self.screen_rect.bottom 
 
-		self.moving_right = False #set up movement booleans
+		self.moving_right = False #sets up the movement of booleans
 		self.moving_left = False
 		self.moving_up = False
 		self.moving_down = False
 
-	# add update to the hero class to keep all the hero updates in our hero class
+	# this updates all the hero in the class
 	def update(self):
 		if self.moving_right and self.rect.right < self.screen_rect.right:
-			self.rect.centerx += 10 #move the hero to the right
+			self.rect.centerx += 10 #moves  the hero to right
 		elif self.moving_left and self.rect.left > self.screen_rect.left:
-			self.rect.centerx -= 10 #move the hero to the left
+			self.rect.centerx -= 10 #moves the hero to left
 		elif self.moving_up and self.rect.top > self.screen_rect.top:
-			self.rect.y -= 10 #move the hero up
+			self.rect.y -= 10 #moves the hero up
 		elif self.moving_down and self.rect.bottom < self.screen_rect.bottom:
-			self.rect.y += 10 #move the hero down	
+			self.rect.y += 10 #moves the hero down	
 
 	def draw_me(self):
-		self.screen.blit(source = self.image, dest = self.rect) #draw the surface... (the image, the where)
+		self.screen.blit(source = self.image, dest = self.rect)
